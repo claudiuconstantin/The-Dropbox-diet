@@ -12,3 +12,24 @@ Your program reads an integer N (1 <= N <= 50) from STDIN representing the numbe
 Output
 
 Output should be sent to stdout, one activity name per line, alphabetized. If there is no possible solution, the output should be no solution. If there are multiple solutions, your program can output any one of them. Solutions should be non-trivial, so don't send us cat > /dev/null, you smart aleck.
+
+
+Sample input 
+12
+free-lunch 802
+mixed-nuts 421
+orange-juice 143
+heavy-ddr-session -302
+cheese-snacks 137
+cookies 316
+mexican-coke 150
+dropballers-basketball -611
+coding-six-hours -466
+riding-scooter -42
+rock-band -195
+playing-drums -295
+
+Sample output 
+coding-six-hours
+cookies
+mexican-coke
