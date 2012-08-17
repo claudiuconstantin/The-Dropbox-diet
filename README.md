@@ -15,6 +15,7 @@ Output should be sent to stdout, one activity name per line, alphabetized. If th
 
 
 Sample input 
+
 12
 free-lunch 802
 mixed-nuts 421
@@ -29,7 +30,8 @@ riding-scooter -42
 rock-band -195
 playing-drums -295
 
-Sample output 
+Sample output
+ 
 coding-six-hours
 cookies
 mexican-coke
