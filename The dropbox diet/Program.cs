@@ -8,16 +8,14 @@ namespace The_dropbox_diet
     {
         static void Main()
         {
-            //get the number of items
-            int numberOfItems = GetNumberOfItems();
+            int itemsNo = GetNumberOfItems();
 
-            //get the items
-            List<DropBoxItem> dropboxItems = GetDropboxItems(numberOfItems);
+            IEnumerable<DropBoxItem> dropboxItems = GetDropboxItems(itemsNo);
 
-            //generate a solution
-            List<DropBoxItem> solutionItems = GetSolution(dropboxItems);
+            // generate a solution
+            IEnumerable<DropBoxItem> solutionItems = GetSolution(dropboxItems);
 
-            //present the output
+            // present the output
             PrintOutput(solutionItems);
 
             //stop. Hammer time.
@@ -28,78 +26,60 @@ namespace The_dropbox_diet
 
         private static int GetNumberOfItems()
         {
-            int numberOfItems = 0;
+            int itemsNo = 0;
 
-            //keep asking until a good number is provided
-            while (numberOfItems < 1 || numberOfItems > 50)
+            // keep asking until a good number is provided
+            while (itemsNo < 1 || itemsNo > 50)
             {
                 Console.Write("Enter a number smaller than 50: ");
-
-                string input = Console.ReadLine();
-
-                if (!string.IsNullOrEmpty(input))
-                {
-                    try
-                    {
-                        numberOfItems = int.Parse(input);
-                    }
-                    catch
-                    {
-                        //a FormatException can occur
-                    }
-                }
+                int.TryParse(Console.ReadLine(), out itemsNo);
             }
 
-            return numberOfItems;
+            return itemsNo;
         }
 
-        private static List<DropBoxItem> GetDropboxItems(int numberOfItems)
+        private static IEnumerable<DropBoxItem> GetDropboxItems(int itemsNo)
         {
             //ask for the items
-            Console.WriteLine(Environment.NewLine + "Enter " + numberOfItems + " Dropbox items with their corresponding number of calories:");
-
-            //read the items
+            Console.WriteLine(Environment.NewLine + "Enter " + itemsNo + " Dropbox items with their corresponding number of calories:");
+            
             int itemsRead = 0;
             var dropboxItems = new List<DropBoxItem>();
 
-            while (itemsRead < numberOfItems)
+            while (itemsRead < itemsNo)
             {
+                // index
                 Console.Write(itemsRead + 1 + ": ");
 
                 string inputString = Console.ReadLine();
-                
                 if (!string.IsNullOrEmpty(inputString))
                 {
-                    inputString = inputString.Trim().ToLower();//some adjustments
-
-                    int separatorIndex = inputString.LastIndexOf(' ');
-
+                    inputString = inputString.Trim().ToLower(); //some adjustments
+                    
+                    string[] parts = inputString.Split(' ');
                     try
                     {
-                        string name = inputString.Substring(0, separatorIndex).Trim();
-                        string calories = inputString.Substring(separatorIndex, inputString.Length - separatorIndex);
-
-                        var item = new DropBoxItem
-                                       {
-                                           Name = name,
-                                           NumberOfCalories = int.Parse(calories)
-                                       };
-
-                        dropboxItems.Add(item);
-
+                        dropboxItems.Add(new DropBoxItem
+                        {
+                            Name = parts[0],
+                            NumberOfCalories = int.Parse(parts[1])
+                        });
                         itemsRead++;
                     }
                     catch
                     {
-                        //a FormatException can occur
+                        Console.WriteLine("This is an invalid entry, try again:");
                     }
                 }
             }
+
             return dropboxItems;
         }
 
-        private static List<DropBoxItem> GetSolution(List<DropBoxItem> dropboxItems)
+        private static IEnumerable<DropBoxItem> GetSolution(IEnumerable<DropBoxItem> dropboxItems)
         {
+            // TODO: this can be surely improved
+
             IEnumerable<DropBoxItem> positives = dropboxItems.Where(item => item.NumberOfCalories > 0);
             IEnumerable<DropBoxItem> negatives = dropboxItems.Where(item => item.NumberOfCalories < 0);
 
@@ -129,11 +109,11 @@ namespace The_dropbox_diet
                     {
                         var firstSolution = new List<DropBoxItem>();
 
-                        //we have a solution. Sum it up and go
+                        // we have a solution. Sum it up and go
                         firstSolution.AddRange(positiveCombination);
                         firstSolution.AddRange(negativeCombination);
 
-                        return firstSolution.OrderBy(item => item.Name).ToList();//order alphabetically
+                        return firstSolution.OrderBy(item => item.Name).ToList(); //order alphabetically
                     }
                 }
             }
@@ -141,16 +121,15 @@ namespace The_dropbox_diet
             return new List<DropBoxItem>();//nothing found
         }
 
-        private static void PrintOutput(List<DropBoxItem> solutionItems)
+        private static void PrintOutput(IEnumerable<DropBoxItem> solutionItems)
         {
             if (!solutionItems.Any())
             {
-                Console.WriteLine(Environment.NewLine + "No solution...");
+                Console.WriteLine(Environment.NewLine + "No solution... :(");
             }
             else
             {
                 Console.WriteLine(Environment.NewLine + "A solution could be this one:");
-
                 foreach (DropBoxItem solution in solutionItems)
                 {
                     Console.WriteLine(solution.Name);
